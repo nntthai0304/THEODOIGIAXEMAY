@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL Data</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        h1 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #ddd;
+        }
+        canvas {
+            max-width: 800px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Data from SQL Server</h1>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Màu xe</th>
+            <th>Giá đề xuất</th>
+            <th>Giá bán ưu đãi</th>
+        </tr>
+        {% for item in data %}
+        <tr>
+            <td>{{ item.id }}</td>
+            <td>{{ item.mauxe }}</td>
+            <td>{{ item.giadexuat }}</td>
+            <td>{{ item.giabanuudai }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <!-- Biểu đồ giá đề xuất của các dòng xe -->
+    <canvas id="priceChart"></canvas>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        var ctx = document.getElementById('priceChart').getContext('2d');
+        var labels = [];
+        var giadexuat = [];
+
+        {% for item in data %}
+            labels.push("{{ item.mauxe }}");
+            giadexuat.push("{{ item.giadexuat }}");
+        {% endfor %}
+
+        var chartData = {
+            labels: labels,
+            datasets: [{
+                label: 'Giá đề xuất',
+                data: giadexuat,
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        };
+
+        var priceChart = new Chart(ctx, {
+            type: 'bar',
+            data: chartData,
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
