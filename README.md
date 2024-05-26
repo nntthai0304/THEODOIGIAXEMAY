@@ -3,7 +3,7 @@ K205480106039
 LỚP: 56KMT
 
 1.Cơ sở dữ liệu.
-- Bảng “Thong Tin” sẽ thông tin về loại xe, hãng xe, mưc giá bán.
+- Bảng “bang1” sẽ thông tin về loại xe, giá đề xuất và giá bán ưu đãi
 
 - Stored Procedures: lấy thông tin của các loại xe máy được bán chạy nhất trong thị trường Việt Nam.
 
@@ -12,7 +12,7 @@ LỚP: 56KMT
 3.Mô tả dữ liệu.
 - Sử dụng Web Scraping hoặc lấy dữ liệu qua API của trang web về bán xe máy.
 
-- Dữ liệu bao gồm thông tin về các loại xe máy và giá bán của các loại xe.
+- Dữ liệu bao gồm thông tin về các loại xe máy và 2 loại giá bán của tưng loại xe.
 
 - Node-RED: Xây dựng một chu trình trong Node-RED để tự động gọi API Python để lấy dữ liệu. Sau đó, xử lý dữ liệu và update vào CSDL.
 
