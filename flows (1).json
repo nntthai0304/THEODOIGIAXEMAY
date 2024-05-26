@@ -1,0 +1,203 @@
+[
+    {
+        "id": "a58e389e1a0cb75d",
+        "type": "tab",
+        "label": "Flow 2",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "39063f1b24f77179",
+        "type": "inject",
+        "z": "a58e389e1a0cb75d",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 140,
+        "y": 280,
+        "wires": [
+            [
+                "7ca65015577e1559"
+            ]
+        ]
+    },
+    {
+        "id": "7ca65015577e1559",
+        "type": "http request",
+        "z": "a58e389e1a0cb75d",
+        "name": "",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://127.0.0.1:8000",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 390,
+        "y": 300,
+        "wires": [
+            [
+                "c02ec2aa8473544e",
+                "1190fd751e87d94c"
+            ]
+        ]
+    },
+    {
+        "id": "1cc6e8a71a1a7341",
+        "type": "debug",
+        "z": "a58e389e1a0cb75d",
+        "name": "debug 3",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 780,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "193885fdf4c33d8c",
+        "type": "MSSQL",
+        "z": "a58e389e1a0cb75d",
+        "mssqlCN": "c1b4fb13714e8e0d",
+        "name": "",
+        "outField": "payload",
+        "returnType": 0,
+        "throwErrors": 1,
+        "query": "EXEC SP_giaban  @mauxe = @mauxe , @giadexuat= @param2 , @giabanuudai =@param3",
+        "modeOpt": "",
+        "modeOptType": "query",
+        "queryOpt": "payload",
+        "queryOptType": "editor",
+        "paramsOpt": "",
+        "paramsOptType": "editor",
+        "rows": "rows",
+        "rowsType": "msg",
+        "parseMustache": true,
+        "params": [
+            {
+                "output": false,
+                "name": "mauxe",
+                "type": "NVarChar(50)",
+                "valueType": "msg",
+                "value": "payload.model",
+                "options": {
+                    "nullable": true,
+                    "primary": false,
+                    "identity": false,
+                    "readOnly": false
+                }
+            },
+            {
+                "output": false,
+                "name": "param2",
+                "type": "NVarChar(50)",
+                "valueType": "msg",
+                "value": "payload.recommended_price",
+                "options": {
+                    "nullable": true,
+                    "primary": false,
+                    "identity": false,
+                    "readOnly": false
+                }
+            },
+            {
+                "output": false,
+                "name": "param3",
+                "type": "NVarChar(50)",
+                "valueType": "msg",
+                "value": "payload.discounted_price",
+                "options": {
+                    "nullable": true,
+                    "primary": false,
+                    "identity": false,
+                    "readOnly": false
+                }
+            }
+        ],
+        "x": 800,
+        "y": 220,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "c02ec2aa8473544e",
+        "type": "function",
+        "z": "a58e389e1a0cb75d",
+        "name": "function 1",
+        "func": "function processVehicleData(vehicleData) {\n    var records = [];\n    var data = vehicleData.data; // Truy cập mảng dữ liệu bên trong đối tượng vehicleData\n\n    // Chuẩn bị dữ liệu cho mỗi mẫu xe\n    for (var i = 0; i < data.length; i++) {\n        var model = data[i].model;\n        var recommended_price = data[i].recommended_price;\n        var discounted_price = data[i].discounted_price;\n\n        // Kiểm tra dữ liệu giá có null không\n        if (recommended_price !== null && discounted_price !== null) {\n            var record = {\n                model: model,\n                recommended_price: String(recommended_price), // Chuyển giá thành kiểu chuỗi\n                discounted_price: String(discounted_price)    // Chuyển giá thành kiểu chuỗi\n            };\n            records.push(record);\n        }\n    }\n\n    var index = 0;\n    var interval = setInterval(function () {\n        if (index < records.length) {\n            // Gửi bản ghi tới MySQL node để lưu vào cơ sở dữ liệu\n            node.send({ payload: records[index] });\n            index++;\n        } else {\n            clearInterval(interval); // Dừng interval khi đã gửi hết dữ liệu\n        }\n    }, 10000); // Gửi mỗi 10 giây một lần\n\n    return null;\n}\n\n// Ví dụ dữ liệu xe\nvar vehicleData = msg.payload;\n\n// Gọi hàm xử lý dữ liệu xe\nprocessVehicleData(vehicleData);\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 580,
+        "y": 320,
+        "wires": [
+            [
+                "193885fdf4c33d8c",
+                "1cc6e8a71a1a7341"
+            ]
+        ]
+    },
+    {
+        "id": "1190fd751e87d94c",
+        "type": "debug",
+        "z": "a58e389e1a0cb75d",
+        "name": "debug 4",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 560,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "c1b4fb13714e8e0d",
+        "type": "MSSQL-CN",
+        "tdsVersion": "7_4",
+        "name": "NNTHAI\\SQLEXPRESS",
+        "server": "127.0.0.1",
+        "port": "1433",
+        "encyption": false,
+        "trustServerCertificate": true,
+        "database": "datagiaxe",
+        "useUTC": true,
+        "connectTimeout": "15000",
+        "requestTimeout": "15000",
+        "cancelTimeout": "5000",
+        "pool": "5",
+        "parseJSON": false,
+        "enableArithAbort": true,
+        "readOnlyIntent": false
+    }
+]
