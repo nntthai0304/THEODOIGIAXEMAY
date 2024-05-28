@@ -22,5 +22,5 @@ LỚP: 56KMT
 
 - Hiển thị danh sách các loại xe và giá trị cao nhất của mỗi loại xe đó.
 
-- Sử dụng các công nghệ như HTML, CSS, JavaScript để tạo giao diện web.
+- Sử dụng các công nghệ như HTML, CSS,  để tạo giao diện web.
 
